@@ -6,7 +6,7 @@ services:
       - JIBJIB_DB_URL=test-r:test-r@jibjib-mongo/birds
       - JIBJIB_MODEL_URL=http://jibjib-query:8081
     ports:
-      - "8080:8080"    
+      - "3100:8080"    
     depends_on: 
       - mongo
       - jibjib-query
@@ -36,23 +36,23 @@ services:
 
   jibjib-tf-serving:
     image: obitech/tensorflow-serving:devel-cpu    
-    ports:
-      - 8082:8082
+    #ports:
+    #  - 8082:8082
     volumes:
       - type: bind
         source: ${JIBJIB_MODEL_PATH}/serve
         target: /serve
     networks:
       - jibjib
-    command: tensorflow_model_server --port=8082 --model_name=jibjib_model --model_base_path=/serve/jibjib_model
+    command: tensorflow_model_server --port=8080 --model_name=jibjib_model --model_base_path=/serve/jibjib_model
 
   jibjib-query:
     image: obitech/jibjib-query    
-    ports:
-      - "8081:8081"
+    #ports:
+    #  - "8081:8081"
     environment:
       - SERVING_URL=jibjib-tf-serving
-      - SERVING_PORT=8082
+      - SERVING_PORT=8080
     volumes:
       - type: bind
         source: ${JIBJIB_APP_INPUT_PATH}
