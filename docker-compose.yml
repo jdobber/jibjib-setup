@@ -6,7 +6,7 @@ services:
       - JIBJIB_DB_URL=test-r:test-r@jibjib-mongo/birds
       - JIBJIB_MODEL_URL=http://jibjib-query:8081
     ports:
-      - "3100:8080"    
+      - "8000:8080"    
     depends_on: 
       - mongo
       - jibjib-query
