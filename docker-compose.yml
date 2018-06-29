@@ -1,0 +1,71 @@
+version: "3.4"
+services:
+  jibjib-api:
+    image: "jibjib"    
+    environment:
+      - JIBJIB_DB_URL=test-r:test-r@jibjib-mongo/birds
+      - JIBJIB_MODEL_URL=http://jibjib-query:8081
+    ports:
+      - "8080:8080"    
+    depends_on: 
+      - mongo
+      - jibjib-query
+    networks:
+      - jibjib      
+
+  jibjib-mongo:
+    image: mongo:3.6.5
+    volumes:
+      - type: volume
+        source: documentstore
+        target: /data/db
+      - type: bind
+        source: ${JIBJIB_MONGO_CONFIG_PATH}
+        target: /etc/mongo
+      - type: bind
+        source: ${JIBJIB_MONGO_IMPORT_PATH}
+        target: /import
+      - type: bind
+        source: ${JIBJIB_MONGO_INITDB_PATH}
+        target: /initdb
+    #ports:
+    #    - "27017:27017"
+    networks:
+      - jibjib
+    command: --config /etc/mongo/mongod.conf --auth
+
+  jibjib-tf-serving:
+    image: obitech/tensorflow-serving:devel-cpu    
+    ports:
+      - 8082:8082
+    volumes:
+      - type: bind
+        source: ${JIBJIB_MODEL_PATH}/serve
+        target: /serve
+    networks:
+      - jibjib
+    command: tensorflow_model_server --port=8082 --model_name=jibjib_model --model_base_path=/serve/jibjib_model
+
+  jibjib-query:
+    image: obitech/jibjib-query    
+    ports:
+      - "8081:8081"
+    environment:
+      - SERVING_URL=jibjib-tf-serving
+      - SERVING_PORT=8082
+    volumes:
+      - type: bind
+        source: ${JIBJIB_APP_INPUT_PATH}
+        target: /app/input
+    networks:
+      - jibjib
+    depends_on:
+      - tf-serving
+
+networks:
+  jibjib:
+
+volumes:
+  documentstore:
+    external: true
+    name: ${JIBJIB_MONGO_DATABASE_VOLUME}
