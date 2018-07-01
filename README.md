@@ -5,6 +5,7 @@ First build the JibJib API Service image:
 
 ```sh
 git clone https://github.com/gojibjib/jibjib-api
+cd jibjib-api
 docker build --tag=jibjib .
 cd ..
 ```
@@ -29,6 +30,8 @@ Then deploy the stack (maybe you need to perfom `docker swarm init` before):
 ```sh
 docker stack deploy -c docker-compose.yml --prune jibjib
 ```
+
+`docker stack` will pull all needed images... that might take some time.
 
 Wait for MongoDB to show up (use `docker ps` to check):
 
