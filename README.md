@@ -17,7 +17,7 @@ git clone https://github.com/jdobber/jibjib-setup.git
 cd jibjib-setup
 ```
 
-Set the environment and fetch all additional assets (model etc.). This fetch approx. 500 MB and
+Set the environment and fetch all additional assets (model etc.). This will fetch approx. 500 MB and
 may take some time:
 
 ```sh
