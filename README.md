@@ -1,5 +1,5 @@
 # jibjib-setup
-Easy setup for the fabulous JibJib service with `docker stack`.
+Easy setup for the fabulous [JibJib](https://github.com/gojibjib/jibjib) service with `docker stack`.
 
 First build the JibJib API Service image:
 
@@ -25,13 +25,18 @@ source ./set_env.sh
 ./setup.sh
 ```
 
+Pull all other images:
+
+```sh
+docker pull obitech/tensorflow-serving:devel-cpu
+docker pull obitech/jibjib-query
+```
+
 Then deploy the stack (maybe you need to perfom `docker swarm init` before):
 
 ```sh
 docker stack deploy -c docker-compose.yml --prune jibjib
 ```
-
-`docker stack` will pull all needed images... that might take some time.
 
 Wait for MongoDB to show up (use `docker ps` to check):
 
@@ -40,6 +45,13 @@ Then run (and only once):
 ```sh
 ./init_mongodb.sh
 ```
+
+Check the service at: http://<your_ip>:8000
+
+See [here](https://github.com/gojibjib/jibjib-api) for API endpoints and documentation about how
+to query the service.
+
+Finally, If you want to stop the service and remove the stack:
 
 ```sh
 docker stack rm jibjib
